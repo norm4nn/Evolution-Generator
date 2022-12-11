@@ -4,56 +4,59 @@ package agh.ics.oop;
 import java.util.ArrayList;
 
 public class Animal extends AbstractWorldMapElement {
-    private MapDirection orientation = MapDirection.NORTH;
-    final private AbstractWorldMap map;
+
     final private ArrayList<IPositionChangeObserver> positionChangeObservers;
 
-    public Animal(AbstractWorldMap map, Vector2d initialPosition) {
-        this.map = map;
-        this.position = initialPosition;
+    final private Parametrs parametrs;
+    private int age = 0;
+    private int energy;
+    private int amountOfChildren;
+    private int dayOfDeath;
+    private Genotype genotype;
+    private int orientation = new MoveDirection().random();
+
+    public Animal(AbstractWorldMap map, Parametrs parametrs) {
+//        this.map = map;
+        this.parametrs = parametrs;
+        this.position = new Vector2d((int) (Math.random()*parametrs.getMapWidth()), (int) (Math.random()*parametrs.getMapHeight()));
+        this.genotype = new Genotype(parametrs);
+        this.energy = parametrs.getStartingAmountOfEnergy();
+
         this.positionChangeObservers = new ArrayList<>();
-        this.addObserver(this.map);
+//        this.addObserver(this.map);
     }
 
-    public Animal() {
-        this.position = new Vector2d(2, 2);
-        this.map = new RectangularMap(5, 5);
+    public Animal(AbstractWorldMap map, Parametrs parametrs, Animal parent1, Animal parent2) {
+        this.parametrs = parametrs;
+        this.position = parent1.getPosition();
         this.positionChangeObservers = new ArrayList<>();
-        this.addObserver(this.map);
+
+        int sumOfEnergy = parent1.getEnergy() + parent2.getEnergy();
+        if (Math.random() < 0.5) {
+            float dividePoint = (float) (parent1.getEnergy())/sumOfEnergy;
+            int[][] parent1Genotypes = parent1.getGenotype().divideGenotype(dividePoint);
+            int[][] parent2Genotypes = parent2.getGenotype().divideGenotype(dividePoint);
+            this.genotype = new Genotype(parent1Genotypes[0], parent2Genotypes[1], parametrs);
+        }
+        else {
+            float dividePoint = 1 - (float) (parent1.getEnergy()) / sumOfEnergy;
+            int[][] parent1Genotypes = parent1.getGenotype().divideGenotype(dividePoint);
+            int[][] parent2Genotypes = parent2.getGenotype().divideGenotype(dividePoint);
+            this.genotype = new Genotype(parent1Genotypes[1], parent2Genotypes[0], parametrs);
+        }
+        
     }
 
-    public String toString() {
-        return switch (this.orientation) {
-            case NORTH -> "^";
-            case SOUTH -> "V";
-            case WEST -> "<";
-            case EAST -> ">";
-        };
+
+
+    public void move() {
+        this.age += 1;
+        this.energy -= 1;
+        this.orientation += this.genotype.useGen();
+        this.orientation %= 8;
     }
 
-    public void move(MoveDirection direction) {
-        if (direction.equals(MoveDirection.LEFT) || direction.equals(MoveDirection.RIGHT)){
-            switch (direction) {
-                case LEFT -> this.orientation = this.orientation.previous();
-                case RIGHT -> this.orientation = this.orientation.next();
-            }
-            return;
-        }
-
-        Vector2d modifier = this.orientation.toUnitVector();
-        if (direction.equals(MoveDirection.BACKWARD)) {
-            modifier = this.orientation.toUnitVector().opposite();
-        }
-
-        final Vector2d newPosition = this.position.add(modifier);
-
-        if (this.map.canMoveTo(newPosition)) {
-            this.positionChanged(this.position, newPosition);
-            this.position = newPosition;
-        }
-    }
-
-    public MapDirection getOrientation() {
+    public int getOrientation() {
         return this.orientation;
     }
 
@@ -73,11 +76,30 @@ public class Animal extends AbstractWorldMapElement {
 
     @Override
     public String imgAddress() {
-        return switch (this.orientation) {
-            case NORTH -> "src/main/resources/up.png";
-            case EAST -> "src/main/resources/right.png";
-            case SOUTH -> "src/main/resources/down.png";
-            case WEST -> "src/main/resources/left.png";
-        };
+        return "-";
+    }
+
+    public Genotype getGenotype() {
+        return genotype;
+    }
+
+    public void setDayOfDeath(int dayOfDeath) {
+        this.dayOfDeath = dayOfDeath;
+    }
+
+    public int getDayOfDeath() {
+        return dayOfDeath;
+    }
+
+    public int getAmountOfChildren() {
+        return amountOfChildren;
+    }
+
+    public int getEnergy() {
+        return energy;
+    }
+
+    public int getAge() {
+        return age;
     }
 }
