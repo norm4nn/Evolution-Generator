@@ -21,7 +21,7 @@ public class SimulationEngine implements IEngine, Runnable {
         LinkedList<Animal> animalLinkedList = new LinkedList<>();
         for (Vector2d position : initialPositions) {
             if (map.canMoveTo(position)) {
-                animalLinkedList.add(new Animal(this.map, position));
+//                animalLinkedList.add(new Animal(this.map, position));
                 this.map.place(animalLinkedList.getLast());
             } else
                 throw new IllegalArgumentException("Couldn't place animal on position " + position + ".");
@@ -51,7 +51,7 @@ public class SimulationEngine implements IEngine, Runnable {
         if (this.app == null) {
             for(int i = 0; i < this.moves.size(); ++i)
 //                System.out.println(this.map);
-                this.animalArrayList.get(i % this.animalArrayList.size()).move(this.moves.get(i));
+                this.animalArrayList.get(i % this.animalArrayList.size()).move();
 
             return;
         }
@@ -59,7 +59,7 @@ public class SimulationEngine implements IEngine, Runnable {
         System.out.println("Thread started.");
         Platform.runLater(this.app::draw);
         for(int i = 0; i < this.moves.size(); ++i) {
-            this.animalArrayList.get(i % this.animalArrayList.size()).move(this.moves.get(i));
+            this.animalArrayList.get(i % this.animalArrayList.size()).move();
             Platform.runLater(this.app::draw);
             try {
                 Thread.sleep(this.delay);

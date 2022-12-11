@@ -34,7 +34,6 @@ public class App extends Application {
         primaryStage.show();
 
         this.startBtn.setOnAction((event) -> {
-            this.engine.setDirection(new OptionsParser().parse(this.textField.getText().split(" ")));
             this.engineThread = new Thread(engine);
             this.engineThread.start();
         });
@@ -114,11 +113,9 @@ public class App extends Application {
         super.init();
         getParameters().getRaw();
 
-        MoveDirection[] directions = new OptionsParser().parse("f b r l f f r r f f f f f f f f".split(" "));
-        this.map = new GrassField(10);
         Vector2d[] positions = {new Vector2d(2, 2), new Vector2d(3, 4)};
 
-        this.engine = new SimulationEngine(directions, this.map, positions, this);
+        this.engine = new SimulationEngine(this.map, positions, this);
 
 
         this.startBtn = new Button("START");
