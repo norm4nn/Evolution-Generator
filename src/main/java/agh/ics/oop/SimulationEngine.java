@@ -25,31 +25,20 @@ public class SimulationEngine implements IEngine, Runnable {
     });
 
     public SimulationEngine( Parametrs parametrs) throws IllegalArgumentException {
-//        this.app = app;
-//        this.map = map;
+
         this.parametrs = parametrs;
+
+        this.map = new GlobeMap(this.parametrs.getMapWidth(), this.parametrs.getMapHeight());
+        for(int i=0; i < this.parametrs.getStartingAmountOfAnimals(); ++i) {
+            Animal animal = new Animal(this.map, this.parametrs);
+            this.map.place(animal);
+            this.animals.add(animal);
+        }
     }
 
     @Override
     public void run() {
-        if (this.app == null) {
-            for(int i = 0; i < this.moves.size(); ++i)
-//                System.out.println(this.map);
-                this.animalArrayList.get(i % this.animalArrayList.size()).move();
 
-            return;
-        }
-
-        System.out.println("Thread started.");
-        for(int i = 0; i < this.moves.size(); ++i) {
-            this.animalArrayList.get(i % this.animalArrayList.size()).move();
-            Platform.runLater(this.app::draw);
-            try {
-                Thread.sleep(this.delay);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        }
     }
 
 }

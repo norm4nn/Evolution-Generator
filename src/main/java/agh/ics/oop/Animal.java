@@ -15,6 +15,8 @@ public class Animal extends AbstractWorldMapElement {
     final private Genotype genotype;
     private MoveDirection direction;
 
+    private boolean breeded;
+
     public Animal(AbstractWorldMap map, Parametrs parametrs) {
 //        this.map = map;
         this.direction = new MoveDirection();
@@ -26,6 +28,7 @@ public class Animal extends AbstractWorldMapElement {
         this.genotype = new Genotype(parametrs);
         this.energy = parametrs.getStartingAmountOfEnergy();
         this.positionChangeObservers = new ArrayList<>();
+        this.breeded = false;
 //        this.addObserver(this.map);
     }
 
@@ -39,6 +42,7 @@ public class Animal extends AbstractWorldMapElement {
         this.age = 0;
         this.energy = this.parametrs.getUsedEnergyToBreed() * 2;
         this.positionChangeObservers = new ArrayList<>();
+        this.breeded = false;
 
         int sumOfEnergy = parent1.getEnergy() + parent2.getEnergy();
         if (Math.random() < 0.5) {
@@ -57,12 +61,14 @@ public class Animal extends AbstractWorldMapElement {
         parent2.loseEnergy(this.parametrs.getUsedEnergyToBreed());
         parent1.amountOfChildren += 1;
         parent2.amountOfChildren += 1;
+        parent1.breeded = true;
+        parent2.breeded = true;
     }
 
     public boolean isAlive() {
         if (this.dayOfDeath != -1) return false;
         if (this.energy <= 0) {
-            this.dayOfDeath = this.map.getDate();
+            this.dayOfDeath = this.map.getDay();
             return false;
         }
         return true;
@@ -99,6 +105,7 @@ public class Animal extends AbstractWorldMapElement {
     }
 
     public MoveDirection getDirection() {
+        this.breeded = false;
         return this.direction;
     }
 
@@ -148,5 +155,19 @@ public class Animal extends AbstractWorldMapElement {
 
     public int getAge() {
         return age;
+    }
+
+    public boolean equals(Object other) {
+        if (this == other)
+            return true;
+        if (!(other instanceof final Animal that))
+            return false;
+
+        return this.energy == that.energy && this.age == that.age
+                && this.amountOfChildren == that.amountOfChildren && this.breeded == that.breeded;
+    }
+
+    public int hashCode() {
+        return this.energy + this.age*10 + this.amountOfChildren*10;
     }
 }

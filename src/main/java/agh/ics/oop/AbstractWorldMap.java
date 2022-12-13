@@ -11,6 +11,8 @@ public abstract class AbstractWorldMap implements IWorldMap{//, IPositionChangeO
     protected Parametrs parametrs;
     protected Vector2d lowerLeft;
     protected Vector2d upperRight;
+
+    protected int day;
     protected boolean isInScope(Vector2d position) {
         return (position.follows(this.lowerLeft) && position.precedes(upperRight));
     }
@@ -45,4 +47,15 @@ public abstract class AbstractWorldMap implements IWorldMap{//, IPositionChangeO
         return new MapVisualizer(this).draw(this.lowerLeft, this.upperRight);
     }
 
+
+    public Vector2d getLowerLeft() { return this.lowerLeft; }
+    public Vector2d getUpperRight() { return this.upperRight; }
+
+    public void dayPassed() {
+        this.day += 1;
+    }
+
+    public int getDay() {
+        return this.day;
+    }
 }
