@@ -1,18 +1,18 @@
 package agh.ics.oop;
 
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.TreeSet;
 
-public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObserver{
+public abstract class AbstractWorldMap implements IWorldMap{//, IPositionChangeObserver{
+
     protected HashMap<Vector2d, AbstractWorldMapElement> mapElements = new HashMap<>();
-    protected abstract boolean isInScope(Vector2d position);
-    public abstract Vector2d getLowerLeft();
-    public abstract Vector2d getUpperRight();
 
-    @Override
-    public void  positionChanged(Vector2d oldPosition, Vector2d newPosition) {
-        Animal animal = (Animal)this.mapElements.get(oldPosition);
-        this.mapElements.remove(oldPosition);
-        this.mapElements.put(newPosition, animal);
+    protected Parametrs parametrs;
+    protected Vector2d lowerLeft;
+    protected Vector2d upperRight;
+    protected boolean isInScope(Vector2d position) {
+        return (position.follows(this.lowerLeft) && position.precedes(upperRight));
     }
 
     @Override
@@ -39,8 +39,10 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
         return this.mapElements.get(position);
     }
 
+
+
     public String toString() {
-        return new MapVisualizer(this).draw(this.getLowerLeft(), this.getUpperRight());
+        return new MapVisualizer(this).draw(this.lowerLeft, this.upperRight);
     }
 
 }

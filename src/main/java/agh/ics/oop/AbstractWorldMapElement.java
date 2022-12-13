@@ -2,6 +2,7 @@ package agh.ics.oop;
 
 abstract class AbstractWorldMapElement implements IMapElement{
     protected Vector2d position;
+    protected AbstractWorldMap map;
 
     @Override
     public Vector2d getPosition() {
@@ -12,6 +13,8 @@ abstract class AbstractWorldMapElement implements IMapElement{
     public boolean isAt(Vector2d position) {
         return this.position.equals(position);
     }
+
+
 
 
 }

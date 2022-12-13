@@ -115,7 +115,7 @@ public class App extends Application {
 
         Vector2d[] positions = {new Vector2d(2, 2), new Vector2d(3, 4)};
 
-        this.engine = new SimulationEngine(this.map, positions, this);
+
 
 
         this.startBtn = new Button("START");

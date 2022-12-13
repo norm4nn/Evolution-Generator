@@ -3,47 +3,31 @@ package agh.ics.oop;
 import agh.ics.oop.gui.App;
 import javafx.application.Platform;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
+import java.util.*;
 
 public class SimulationEngine implements IEngine, Runnable {
-
-    private ArrayList<MoveDirection> moves = new ArrayList<>();
     private AbstractWorldMap map;
-    private ArrayList<Animal> animalArrayList;
-
-    private final App app;
-
+//    private final App app;
+    private final Parametrs parametrs;
     private int delay = 300;
 
-    private void setAnimals(Vector2d[] initialPositions) {
-        LinkedList<Animal> animalLinkedList = new LinkedList<>();
-        for (Vector2d position : initialPositions) {
-            if (map.canMoveTo(position)) {
-//                animalLinkedList.add(new Animal(this.map, position));
-                this.map.place(animalLinkedList.getLast());
-            } else
-                throw new IllegalArgumentException("Couldn't place animal on position " + position + ".");
+    protected TreeSet<Animal> animals = new TreeSet<>(new Comparator<Animal>() {
+        @Override
+        public int compare(Animal a1, Animal a2) {
+            if (a1.getEnergy() == a2.getEnergy()) {
+                if (a1.getAge() == a2.getAge())
+                    return a1.getAmountOfChildren() - a2.getAmountOfChildren();
+                return a1.getAge() - a2.getAge();
+            }
+            return a1.getEnergy() - a2.getEnergy();
         }
 
-        this.animalArrayList = new ArrayList<>(animalLinkedList);
-    }
+    });
 
-    public SimulationEngine(AbstractWorldMap map, Vector2d[] initialPositions, App app) {
-        this.moves = new ArrayList<>();
-        this.map = map;
-        this.app = app;
-
-        this.setAnimals(initialPositions);
-    }
-
-    public SimulationEngine(MoveDirection[] moves, AbstractWorldMap map, Vector2d[] initialPositions, App app) throws IllegalArgumentException {
-        Collections.addAll(this.moves, moves);
-        this.app = app;
-        this.map = map;
-
-        this.setAnimals(initialPositions);
+    public SimulationEngine( Parametrs parametrs) throws IllegalArgumentException {
+//        this.app = app;
+//        this.map = map;
+        this.parametrs = parametrs;
     }
 
     @Override
@@ -57,7 +41,6 @@ public class SimulationEngine implements IEngine, Runnable {
         }
 
         System.out.println("Thread started.");
-        Platform.runLater(this.app::draw);
         for(int i = 0; i < this.moves.size(); ++i) {
             this.animalArrayList.get(i % this.animalArrayList.size()).move();
             Platform.runLater(this.app::draw);
@@ -67,11 +50,6 @@ public class SimulationEngine implements IEngine, Runnable {
                 throw new RuntimeException(e);
             }
         }
-    }
-
-    public void setDirection (MoveDirection[] direction) {
-        this.moves.clear();
-        Collections.addAll(this.moves, direction);
     }
 
 }

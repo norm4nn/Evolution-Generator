@@ -17,7 +17,7 @@ public class Parametrs {
     final private int genotypeLength;
 //    final private int behaviourVarinat;
 
-    Parametrs(int mapWidth, int mapHeight, int energyFromPlant, int numberOfGrowingPlants, int startingAmountOfAnimals,
+    public Parametrs(int mapWidth, int mapHeight, int energyFromPlant, int numberOfGrowingPlants, int startingAmountOfAnimals,
               int startingAmountOfEnergy, int minEnergyToBreed, int usedEnergyToBreed, int minNumberOfMutations,
               int maxNumberOfMutations, int genotypeLength) {
         this.mapWidth = mapWidth;

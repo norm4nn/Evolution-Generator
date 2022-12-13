@@ -18,4 +18,6 @@ public interface IMapElement {
 
     String imgAddress();
 
+    String toString();
+
 }
