@@ -5,11 +5,11 @@ import javafx.application.Platform;
 
 import java.util.*;
 
-public class SimulationEngine implements IEngine, Runnable {
+public class SimulationEngine implements IEngine, Runnable, IAnimalChangeObserver {
     private AbstractWorldMap map;
 //    private final App app;
     private final Parametrs parametrs;
-    private int delay = 300;
+    private final int delay = 300;
 
     protected TreeSet<Animal> animals = new TreeSet<>(new Comparator<Animal>() {
         @Override
@@ -41,4 +41,9 @@ public class SimulationEngine implements IEngine, Runnable {
 
     }
 
+    @Override
+    public void animalChange(Animal oldAnimal, Animal newAnimal) {
+        this.animals.remove(oldAnimal);
+        this.animals.add(newAnimal);
+    }
 }

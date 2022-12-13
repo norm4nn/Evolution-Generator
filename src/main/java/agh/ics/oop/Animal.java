@@ -14,7 +14,6 @@ public class Animal extends AbstractWorldMapElement {
     private int dayOfDeath;
     final private Genotype genotype;
     private MoveDirection direction;
-
     private boolean breeded;
 
     public Animal(AbstractWorldMap map, Parametrs parametrs) {
@@ -29,7 +28,6 @@ public class Animal extends AbstractWorldMapElement {
         this.energy = parametrs.getStartingAmountOfEnergy();
         this.positionChangeObservers = new ArrayList<>();
         this.breeded = false;
-//        this.addObserver(this.map);
     }
 
     public Animal(AbstractWorldMap map, Parametrs parametrs, Animal parent1, Animal parent2) {
@@ -77,14 +75,6 @@ public class Animal extends AbstractWorldMapElement {
     public void eat(Plant plant) {
         this.energy += plant.getEnergy();
     }
-
-//    public void breed(Animal partner) {
-//        partner.loseEnergy(this.parametrs.getUsedEnergyToBreed());
-//        this.loseEnergy(this.parametrs.getUsedEnergyToBreed());
-//        this.amountOfChildren += 1;
-//        partner.amountOfChildren += 1;
-//
-//    }
 
     public boolean isFedUp() {
         return this.energy >= this.parametrs.getMinEnergyToBreed();
