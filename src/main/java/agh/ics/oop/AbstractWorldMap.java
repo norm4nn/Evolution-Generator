@@ -1,11 +1,24 @@
 package agh.ics.oop;
 
+<<<<<<< HEAD
 import java.util.*;
 
 public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObserver{//, IPositionChangeObserver{
 
     protected HashMap<Vector2d, AbstractWorldMapElement> mapElements = new HashMap<>();
     protected HashMap<Vector2d, Plant> plants = new HashMap<>();
+=======
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeSet;
+
+public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObserver{
+
+    protected HashMap<Vector2d, AbstractWorldMapElement> mapElements = new HashMap<>();
+    protected Map<Vector2d, IMapTile> tiles;
+
+>>>>>>> f32ec631965c367e26b071a985a55dda77ceda94
     protected Parametrs parametrs;
     protected Vector2d lowerLeft;
     protected Vector2d upperRight;
@@ -59,12 +72,11 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
         return this.mapElements.get(position);
     }
 
-
+    abstract public void reactToGoingOut(Animal a);
 
     public String toString() {
         return new MapVisualizer(this).draw(this.lowerLeft, this.upperRight);
     }
-
 
     public Vector2d getLowerLeft() { return this.lowerLeft; }
     public Vector2d getUpperRight() { return this.upperRight; }
@@ -77,6 +89,7 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
         return this.day;
     }
 
+<<<<<<< HEAD
     @Override
     public void positionChanged(Vector2d oldPosition, Vector2d newPosition) {
         Animal animal = (Animal)this.mapElements.get(oldPosition);
@@ -85,4 +98,63 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
     }
 
 
+=======
+    public boolean isTherePlant(Vector2d pos){
+        return (objectAt(pos) instanceof Plant);
+    }
+
+    abstract Map<Vector2d, IMapTile> generateTiles();
+
+    public IMapTile getTileAtPosition(Vector2d pos){
+        return tiles.get(pos);
+    }
+
+    public void growNPlants(int n){
+        for (int i = 0; i < 0.8*n; i++) {
+                Vector2d pos = new Vector2d((int) (Math.random()*parametrs.getMapWidth()), (int) (Math.random()*parametrs.getMapHeight()));
+                while(!(isOccupied(pos)||getTileAtPosition(pos)instanceof JungleTile)){
+                    pos = new Vector2d((int) (Math.random()*parametrs.getMapWidth()), (int) (Math.random()*parametrs.getMapHeight()));
+                }
+                Plant p = new Plant(pos, parametrs.getEnergyFromPlant());
+                mapElements.put(pos,p);
+            }
+        for (int i = (int) Math.floor(0.8*n); i<n; i++){
+                Vector2d pos = new Vector2d((int) (Math.random()*parametrs.getMapWidth()), (int) (Math.random()*parametrs.getMapHeight()));
+                while(isOccupied(pos)&& !(getTileAtPosition(pos)instanceof PlainsTile)){
+                    pos = new Vector2d((int) (Math.random()*parametrs.getMapWidth()), (int) (Math.random()*parametrs.getMapHeight()));
+                }
+                Plant p = new Plant(pos, parametrs.getEnergyFromPlant());
+                mapElements.put(pos,p);
+        }
+    }
+
+    public void positionChanged(Vector2d oldPosition, Vector2d newPosition){
+        Animal a = (Animal) objectAt(oldPosition);
+        Animal a2 = null;
+        Plant p = null;
+        mapElements.remove(oldPosition, a);
+        if(objectAt(newPosition) instanceof Animal){
+            a2 = (Animal) mapElements.get(newPosition);
+        }
+        if(isTherePlant(newPosition)){
+            p = (Plant) mapElements.get(newPosition);
+        }
+        if(a2!=null){
+            if(a.isFedUp() && a2.isFedUp()){
+                Animal a3 = new Animal(this,parametrs, a, a2);
+                mapElements.put(newPosition, a3);
+            }
+        }
+        if(p!=null){
+            mapElements.remove(newPosition,p);
+            a.eat(p);
+        }
+        if(isInScope(newPosition)){
+                mapElements.put(newPosition, a);
+        }
+        else{
+            reactToGoingOut(a);
+        }
+    }
+>>>>>>> f32ec631965c367e26b071a985a55dda77ceda94
 }
