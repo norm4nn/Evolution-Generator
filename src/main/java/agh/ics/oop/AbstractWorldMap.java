@@ -2,11 +2,13 @@ package agh.ics.oop;
 
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.TreeSet;
 
 public abstract class AbstractWorldMap implements IWorldMap{//, IPositionChangeObserver{
 
     protected HashMap<Vector2d, AbstractWorldMapElement> mapElements = new HashMap<>();
+    protected Map<Vector2d, IMapTile> tiles;
 
     protected Parametrs parametrs;
     protected Vector2d lowerLeft;
@@ -41,12 +43,11 @@ public abstract class AbstractWorldMap implements IWorldMap{//, IPositionChangeO
         return this.mapElements.get(position);
     }
 
-
+    abstract public void reactToGoingOut(Animal a);
 
     public String toString() {
         return new MapVisualizer(this).draw(this.lowerLeft, this.upperRight);
     }
-
 
     public Vector2d getLowerLeft() { return this.lowerLeft; }
     public Vector2d getUpperRight() { return this.upperRight; }
@@ -58,4 +59,34 @@ public abstract class AbstractWorldMap implements IWorldMap{//, IPositionChangeO
     public int getDay() {
         return this.day;
     }
+
+    public boolean isTherePlant(Vector2d pos){
+        return (objectAt(pos) instanceof Plant);
+    }
+
+    abstract Map<Vector2d, IMapTile> generateTiles();
+
+    public IMapTile getTileAtPosition(Vector2d pos){
+        return tiles.get(pos);
+    }
+
+    public void growNPlants(int n){
+        for (int i = 0; i < 0.8*n; i++) {
+                Vector2d pos = new Vector2d((int) (Math.random()*parametrs.getMapWidth()), (int) (Math.random()*parametrs.getMapHeight()));
+                while(!(isOccupied(pos)||getTileAtPosition(pos)instanceof JungleTile)){
+                    pos = new Vector2d((int) (Math.random()*parametrs.getMapWidth()), (int) (Math.random()*parametrs.getMapHeight()));
+                }
+                Plant p = new Plant(pos, parametrs.getEnergyFromPlant());
+                mapElements.put(pos,p);
+            }
+        for (int i = (int) Math.floor(0.8*n); i<n; i++){
+                Vector2d pos = new Vector2d((int) (Math.random()*parametrs.getMapWidth()), (int) (Math.random()*parametrs.getMapHeight()));
+                while(isOccupied(pos)&& !(getTileAtPosition(pos)instanceof PlainsTile)){
+                    pos = new Vector2d((int) (Math.random()*parametrs.getMapWidth()), (int) (Math.random()*parametrs.getMapHeight()));
+                }
+                Plant p = new Plant(pos, parametrs.getEnergyFromPlant());
+                mapElements.put(pos,p);
+        }
+    }
+
 }

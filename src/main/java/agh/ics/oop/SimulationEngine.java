@@ -32,18 +32,19 @@ public class SimulationEngine implements IEngine, Runnable, IAnimalChangeObserve
     public SimulationEngine( Parametrs parametrs) throws IllegalArgumentException {
 
         this.parametrs = parametrs;
-
-        this.map = new GlobeMap(this.parametrs.getMapWidth(), this.parametrs.getMapHeight());
-        for(int i=0; i < this.parametrs.getStartingAmountOfAnimals(); ++i) {
+        this.map = new HellMap(this.parametrs.getMapWidth(), this.parametrs.getMapHeight(), parametrs);
+        for(int i=0; i < this.parametrs.getStartingAmountOfAnimals(); i++) {
             Animal animal = new Animal(this.map, this.parametrs);
             this.map.place(animal);
             this.animals.add(animal);
         }
+        map.growNPlants(parametrs.getNumberOfGrowingPlants());
     }
 
     @Override
     public void run() {
-        
+        MapVisualizer visualizer = new MapVisualizer(map);
+        System.out.println(visualizer.draw(map.getLowerLeft(),map.getUpperRight()));
     }
 
     @Override
