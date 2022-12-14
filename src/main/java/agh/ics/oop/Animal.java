@@ -17,7 +17,7 @@ public class Animal extends AbstractWorldMapElement {
     private boolean breeded;
 
     public Animal(AbstractWorldMap map, Parametrs parametrs) {
-//        this.map = map;
+        this.map = map;
         this.direction = new MoveDirection();
         this.dayOfDeath = -1;
         this.parametrs = parametrs;
@@ -27,6 +27,7 @@ public class Animal extends AbstractWorldMapElement {
         this.genotype = new Genotype(parametrs);
         this.energy = parametrs.getStartingAmountOfEnergy();
         this.positionChangeObservers = new ArrayList<>();
+        this.addObserver(this.map);
         this.breeded = false;
     }
 
@@ -153,11 +154,13 @@ public class Animal extends AbstractWorldMapElement {
         if (!(other instanceof final Animal that))
             return false;
 
-        return this.energy == that.energy && this.age == that.age
+        return this.position.equals(that.position) && this.energy == that.energy && this.age == that.age
                 && this.amountOfChildren == that.amountOfChildren && this.breeded == that.breeded;
     }
 
     public int hashCode() {
-        return this.energy + this.age*10 + this.amountOfChildren*10;
+        return this.energy + this.age*10 + this.amountOfChildren*10 + this.position.getY()*100 + this.position.getX()*10;
     }
+
+
 }

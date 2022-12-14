@@ -11,7 +11,7 @@ public class SimulationEngine implements IEngine, Runnable, IAnimalChangeObserve
     private final Parametrs parametrs;
     private final int delay = 300;
 
-    protected TreeSet<Animal> animals = new TreeSet<>(new Comparator<Animal>() {
+    protected TreeSet<Animal> animals = new TreeSet<Animal>(new Comparator<Animal>() {
         @Override
         public int compare(Animal a1, Animal a2) {
             if (a1.getPosition().equals(a2.getPosition())) {
@@ -33,7 +33,7 @@ public class SimulationEngine implements IEngine, Runnable, IAnimalChangeObserve
 
         this.parametrs = parametrs;
 
-        this.map = new GlobeMap(this.parametrs.getMapWidth(), this.parametrs.getMapHeight());
+        this.map = new GlobeMap(this.parametrs);
         for(int i=0; i < this.parametrs.getStartingAmountOfAnimals(); ++i) {
             Animal animal = new Animal(this.map, this.parametrs);
             this.map.place(animal);
@@ -43,7 +43,15 @@ public class SimulationEngine implements IEngine, Runnable, IAnimalChangeObserve
 
     @Override
     public void run() {
-        
+        for(Animal animal : this.animals) {
+
+        }
+    }
+
+    public void deadCheck() {
+        for(Animal animal : this.animals) {
+            animal.isAlive();
+        }
     }
 
     @Override
@@ -51,4 +59,6 @@ public class SimulationEngine implements IEngine, Runnable, IAnimalChangeObserve
         this.animals.remove(oldAnimal);
         this.animals.add(newAnimal);
     }
+
+
 }

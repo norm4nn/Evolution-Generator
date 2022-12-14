@@ -1,18 +1,36 @@
 package agh.ics.oop;
 
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.TreeSet;
+import java.util.*;
 
-public abstract class AbstractWorldMap implements IWorldMap{//, IPositionChangeObserver{
+public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObserver{//, IPositionChangeObserver{
 
     protected HashMap<Vector2d, AbstractWorldMapElement> mapElements = new HashMap<>();
-
+    protected HashMap<Vector2d, Plant> plants = new HashMap<>();
     protected Parametrs parametrs;
     protected Vector2d lowerLeft;
     protected Vector2d upperRight;
+    protected HashSet<Vector2d> favouritesPlacesForPlants;
+    protected HashSet<Vector2d> notFavouritePlacesForPlants;
 
     protected int day;
+
+
+    public void growPlants() {
+        ArrayList<Vector2d> favList = new ArrayList<>(this.favouritesPlacesForPlants);
+        ArrayList<Vector2d> notFavList = new ArrayList<>(this.notFavouritePlacesForPlants);
+        float whichPlace;
+        int randInt;
+        for(int i=0;i<this.parametrs.getNumberOfGrowingPlants();++i) {
+            whichPlace = (float) Math.random();
+            if (whichPlace <= 0.8f && favList.size() > 0) {
+                randInt = (int) (Math.random() * favList.size());
+
+                this.plants.put(favList.get(randInt), new Plant(favList.get(randInt), this.parametrs.getEnergyFromPlant()));
+            }
+
+        }
+    }
+
     protected boolean isInScope(Vector2d position) {
         return (position.follows(this.lowerLeft) && position.precedes(upperRight));
     }
@@ -58,4 +76,13 @@ public abstract class AbstractWorldMap implements IWorldMap{//, IPositionChangeO
     public int getDay() {
         return this.day;
     }
+
+    @Override
+    public void positionChanged(Vector2d oldPosition, Vector2d newPosition) {
+        Animal animal = (Animal)this.mapElements.get(oldPosition);
+        this.mapElements.remove(oldPosition);
+        this.mapElements.put(newPosition, animal);
+    }
+
+
 }
