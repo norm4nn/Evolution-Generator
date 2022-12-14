@@ -7,4 +7,5 @@ public interface IAnimalChangeObserver {
      * @param newAnimal - new animal of the map element which will be add to hashmap as new key
      */
     void animalChange(Animal oldAnimal, Animal newAnimal);
+
 }

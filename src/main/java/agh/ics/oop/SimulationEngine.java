@@ -14,13 +14,18 @@ public class SimulationEngine implements IEngine, Runnable, IAnimalChangeObserve
     protected TreeSet<Animal> animals = new TreeSet<>(new Comparator<Animal>() {
         @Override
         public int compare(Animal a1, Animal a2) {
-            if (a1.getEnergy() == a2.getEnergy()) {
-                if (a1.getAge() == a2.getAge())
-                    return a1.getAmountOfChildren() - a2.getAmountOfChildren();
-                return a1.getAge() - a2.getAge();
+            if (a1.getPosition().equals(a2.getPosition())) {
+                if (a1.getEnergy() == a2.getEnergy()) {
+                    if (a1.getAge() == a2.getAge())
+                        return a1.getAmountOfChildren() - a2.getAmountOfChildren();
+                    return a1.getAge() - a2.getAge();
+                }
+                return a1.getEnergy() - a2.getEnergy();
             }
-            return a1.getEnergy() - a2.getEnergy();
-        }
+            if (a1.getPosition().getX() == a2.getPosition().getX())
+                return a1.getPosition().getY() - a2.getPosition().getY();
+            return a1.getPosition().getX() - a2.getPosition().getX();
+            }
 
     });
 
@@ -38,7 +43,7 @@ public class SimulationEngine implements IEngine, Runnable, IAnimalChangeObserve
 
     @Override
     public void run() {
-
+        
     }
 
     @Override
