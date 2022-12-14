@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeSet;
 
-public abstract class AbstractWorldMap implements IWorldMap{//, IPositionChangeObserver{
+public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObserver{
 
     protected HashMap<Vector2d, AbstractWorldMapElement> mapElements = new HashMap<>();
     protected Map<Vector2d, IMapTile> tiles;
@@ -89,4 +89,32 @@ public abstract class AbstractWorldMap implements IWorldMap{//, IPositionChangeO
         }
     }
 
+    public void positionChanged(Vector2d oldPosition, Vector2d newPosition){
+        Animal a = (Animal) objectAt(oldPosition);
+        Animal a2 = null;
+        Plant p = null;
+        mapElements.remove(oldPosition, a);
+        if(objectAt(newPosition) instanceof Animal){
+            a2 = (Animal) mapElements.get(newPosition);
+        }
+        if(isTherePlant(newPosition)){
+            p = (Plant) mapElements.get(newPosition);
+        }
+        if(a2!=null){
+            if(a.isFedUp() && a2.isFedUp()){
+                Animal a3 = new Animal(this,parametrs, a, a2);
+                mapElements.put(newPosition, a3);
+            }
+        }
+        if(p!=null){
+            mapElements.remove(newPosition,p);
+            a.eat(p);
+        }
+        if(isInScope(newPosition)){
+                mapElements.put(newPosition, a);
+        }
+        else{
+            reactToGoingOut(a);
+        }
+    }
 }

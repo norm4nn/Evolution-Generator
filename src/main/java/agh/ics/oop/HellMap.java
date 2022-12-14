@@ -23,7 +23,7 @@ public class HellMap extends AbstractWorldMap{
         while(isOccupied(pos)){
             pos = new Vector2d((int) (Math.random()*parametrs.getMapWidth()), (int) (Math.random()*parametrs.getMapHeight()));
         }
-        a.position = pos;
+        positionChanged(a.getPosition(), pos);
     }
 
     public Map<Vector2d, IMapTile> generateTiles(){

@@ -27,6 +27,7 @@ public class Animal extends AbstractWorldMapElement {
         this.genotype = new Genotype(parametrs);
         this.energy = parametrs.getStartingAmountOfEnergy();
         this.positionChangeObservers = new ArrayList<>();
+        addObserver((IPositionChangeObserver) map);
         this.breeded = false;
     }
 
@@ -40,6 +41,7 @@ public class Animal extends AbstractWorldMapElement {
         this.age = 0;
         this.energy = this.parametrs.getUsedEnergyToBreed() * 2;
         this.positionChangeObservers = new ArrayList<>();
+        addObserver((IPositionChangeObserver) map);
         this.breeded = false;
 
         int sumOfEnergy = parent1.getEnergy() + parent2.getEnergy();
