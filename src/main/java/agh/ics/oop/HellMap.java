@@ -9,9 +9,9 @@ public class HellMap extends AbstractWorldMap{
     int width;
     int height;
 
-    public HellMap(int width, int height, Parametrs parametrs) {
-        this.width = width;
-        this.height = height;
+    public HellMap(Parametrs parametrs) {
+        this.width = parametrs.getMapWidth();
+        this.height = parametrs.getMapHeight();
         this.parametrs = parametrs;
         this.lowerLeft = new Vector2d(0,0);
         this.upperRight = new Vector2d(width,height);

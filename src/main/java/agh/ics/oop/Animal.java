@@ -27,11 +27,8 @@ public class Animal extends AbstractWorldMapElement {
         this.genotype = new Genotype(parametrs);
         this.energy = parametrs.getStartingAmountOfEnergy();
         this.positionChangeObservers = new ArrayList<>();
-<<<<<<< HEAD
         this.addObserver(this.map);
-=======
         addObserver((IPositionChangeObserver) map);
->>>>>>> f32ec631965c367e26b071a985a55dda77ceda94
         this.breeded = false;
     }
 

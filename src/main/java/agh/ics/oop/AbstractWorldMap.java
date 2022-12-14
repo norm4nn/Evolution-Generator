@@ -1,31 +1,27 @@
 package agh.ics.oop;
-
-<<<<<<< HEAD
 import java.util.*;
 
-public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObserver{//, IPositionChangeObserver{
-
-    protected HashMap<Vector2d, AbstractWorldMapElement> mapElements = new HashMap<>();
-    protected HashMap<Vector2d, Plant> plants = new HashMap<>();
-=======
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeSet;
 
+
 public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObserver{
 
     protected HashMap<Vector2d, AbstractWorldMapElement> mapElements = new HashMap<>();
+    protected HashMap<Vector2d, Plant> plants = new HashMap<>();
     protected Map<Vector2d, IMapTile> tiles;
-
->>>>>>> f32ec631965c367e26b071a985a55dda77ceda94
     protected Parametrs parametrs;
     protected Vector2d lowerLeft;
     protected Vector2d upperRight;
     protected HashSet<Vector2d> favouritesPlacesForPlants;
     protected HashSet<Vector2d> notFavouritePlacesForPlants;
-
     protected int day;
+
+    protected int width;
+    protected int height;
+
 
 
     public void growPlants() {
@@ -89,7 +85,6 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
         return this.day;
     }
 
-<<<<<<< HEAD
     @Override
     public void positionChanged(Vector2d oldPosition, Vector2d newPosition) {
         Animal animal = (Animal)this.mapElements.get(oldPosition);
@@ -97,8 +92,6 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
         this.mapElements.put(newPosition, animal);
     }
 
-
-=======
     public boolean isTherePlant(Vector2d pos){
         return (objectAt(pos) instanceof Plant);
     }
@@ -128,33 +121,32 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
         }
     }
 
-    public void positionChanged(Vector2d oldPosition, Vector2d newPosition){
-        Animal a = (Animal) objectAt(oldPosition);
-        Animal a2 = null;
-        Plant p = null;
-        mapElements.remove(oldPosition, a);
-        if(objectAt(newPosition) instanceof Animal){
-            a2 = (Animal) mapElements.get(newPosition);
-        }
-        if(isTherePlant(newPosition)){
-            p = (Plant) mapElements.get(newPosition);
-        }
-        if(a2!=null){
-            if(a.isFedUp() && a2.isFedUp()){
-                Animal a3 = new Animal(this,parametrs, a, a2);
-                mapElements.put(newPosition, a3);
-            }
-        }
-        if(p!=null){
-            mapElements.remove(newPosition,p);
-            a.eat(p);
-        }
-        if(isInScope(newPosition)){
-                mapElements.put(newPosition, a);
-        }
-        else{
-            reactToGoingOut(a);
-        }
-    }
->>>>>>> f32ec631965c367e26b071a985a55dda77ceda94
+//    public void positionChanged(Vector2d oldPosition, Vector2d newPosition){
+//        Animal a = (Animal) objectAt(oldPosition);
+//        Animal a2 = null;
+//        Plant p = null;
+//        mapElements.remove(oldPosition, a);
+//        if(objectAt(newPosition) instanceof Animal){
+//            a2 = (Animal) mapElements.get(newPosition);
+//        }
+//        if(isTherePlant(newPosition)){
+//            p = (Plant) mapElements.get(newPosition);
+//        }
+//        if(a2!=null){
+//            if(a.isFedUp() && a2.isFedUp()){
+//                Animal a3 = new Animal(this,parametrs, a, a2);
+//                mapElements.put(newPosition, a3);
+//            }
+//        }
+//        if(p!=null){
+//            mapElements.remove(newPosition,p);
+//            a.eat(p);
+//        }
+//        if(isInScope(newPosition)){
+//                mapElements.put(newPosition, a);
+//        }
+//        else{
+//            reactToGoingOut(a);
+//        }
+//    }
 }

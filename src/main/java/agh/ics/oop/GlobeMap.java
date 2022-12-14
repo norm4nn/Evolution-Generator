@@ -5,24 +5,20 @@ import java.util.Map;
 import static java.lang.Math.abs;
 
 public class GlobeMap extends AbstractWorldMap{
-    int width;
-    int height;
+    private int width;
+    private int height;
+    Parametrs parametrs;
 
-<<<<<<< HEAD
     public GlobeMap(Parametrs parametrs) {
         this.parametrs = parametrs;
-
+        this.width = parametrs.getMapWidth();
+        this.height = parametrs.getMapWidth();
     }
 
 
     @Override
-    public void growPlants() {
-=======
-    public GlobeMap(int width, int height) {
-        this.width = width;
-        this.height = height;
-    }
->>>>>>> f32ec631965c367e26b071a985a55dda77ceda94
+    public void growPlants() {}
+
 
     @Override
     public void reactToGoingOut(Animal a) {
