@@ -77,6 +77,12 @@ public class Animal extends AbstractWorldMapElement {
 
     public void eat(Plant plant) {
         this.energy += plant.getEnergy();
+
+        if (this.map.getTileAtPosition(plant.getPosition()) instanceof JungleTile tile)
+            this.map.jungleTiles.put(plant.getPosition(), tile);
+        else
+            this.map.plainTiles.put(plant.getPosition(), new PlainsTile());
+
     }
 
     public boolean isFedUp() {

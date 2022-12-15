@@ -39,7 +39,7 @@ public class SimulationEngine implements IEngine, Runnable, IAnimalChangeObserve
                 this.map.place(animal);
                 this.animals.add(animal);
             }
-            map.growPlants();
+            map.growNPlants();
     }
 
 //    @Override

@@ -10,12 +10,13 @@ import java.util.TreeSet;
 public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObserver{
     protected HashMap<Vector2d, AbstractWorldMapElement> mapElements = new HashMap<>();
     protected HashMap<Vector2d, Plant> plants = new HashMap<>();
-    protected Map<Vector2d, IMapTile> tiles;
+    protected HashMap<Vector2d, IMapTile> tiles;
+    protected HashMap<Vector2d, IMapTile> jungleTiles;
+    protected HashMap<Vector2d, IMapTile> plainTiles;
     protected Parametrs parametrs;
     protected Vector2d lowerLeft;
     protected Vector2d upperRight;
-    protected HashSet<IMapTile> jungleTiles;
-    protected HashSet<IMapTile> plainTiles;
+
     protected int day;
     protected int width;
     protected int height;
@@ -69,7 +70,7 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
     public boolean isTherePlant(Vector2d pos){
         return (objectAt(pos) instanceof Plant);
     }
-    abstract Map<Vector2d, IMapTile> generateTiles();
+    abstract ArrayList<HashMap<Vector2d, IMapTile>> generateTiles();
     public IMapTile getTileAtPosition(Vector2d pos){
         return tiles.get(pos);
     }
@@ -84,6 +85,7 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
                 }
                 Plant p = new Plant(pos, parametrs.getEnergyFromPlant());
                 mapElements.put(pos, p);
+                this.jungleTiles.remove(pos);
             } else {
                 Vector2d pos = new Vector2d((int) (Math.random() * parametrs.getMapWidth()), (int) (Math.random() * parametrs.getMapHeight()));
                 while (isOccupied(pos) && !(getTileAtPosition(pos) instanceof PlainsTile)) {
@@ -91,6 +93,7 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
                 }
                 Plant p = new Plant(pos, parametrs.getEnergyFromPlant());
                 mapElements.put(pos, p);
+                this.plainTiles.remove(pos);
             }
         }
     }

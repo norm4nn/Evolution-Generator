@@ -1,5 +1,7 @@
 package agh.ics.oop;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 import static java.lang.Math.abs;
@@ -15,9 +17,6 @@ public class GlobeMap extends AbstractWorldMap{
     }
 
 
-    @Override
-    public void growPlants() {}
-
 
     @Override
     public void reactToGoingOut(Animal a) {
@@ -25,7 +24,7 @@ public class GlobeMap extends AbstractWorldMap{
         a.loseEnergy(parametrs.getUsedEnergyToBreed());
         a.position = new Vector2d(abs(pos.getX()-width), pos.getY());
     }
-    public Map<Vector2d, IMapTile> generateTiles(){
+    public ArrayList<HashMap<Vector2d, IMapTile>> generateTiles(){
         return null;
     }
 }
