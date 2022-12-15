@@ -44,7 +44,7 @@ public class SimulationEngine implements IEngine, Runnable, IAnimalChangeObserve
 
 //    @Override
     public void run() {
-        new MapVisualizer(this.map).draw(this.map.getLowerLeft(), this.map.getUpperRight());
+        System.out.println(new MapVisualizer(this.map).draw(this.map.getLowerLeft(), this.map.getUpperRight()));
 //        for(Animal animal : this.animals) {
 //
 //        }

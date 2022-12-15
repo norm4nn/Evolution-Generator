@@ -5,8 +5,7 @@ import java.util.Map;
 import static java.lang.Math.abs;
 
 public class GlobeMap extends AbstractWorldMap{
-    private int width;
-    private int height;
+
     Parametrs parametrs;
 
     public GlobeMap(Parametrs parametrs) {

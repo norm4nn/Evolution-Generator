@@ -8,37 +8,17 @@ import java.util.TreeSet;
 
 
 public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObserver{
-
     protected HashMap<Vector2d, AbstractWorldMapElement> mapElements = new HashMap<>();
     protected HashMap<Vector2d, Plant> plants = new HashMap<>();
     protected Map<Vector2d, IMapTile> tiles;
     protected Parametrs parametrs;
     protected Vector2d lowerLeft;
     protected Vector2d upperRight;
-    protected HashSet<Vector2d> favouritesPlacesForPlants;
-    protected HashSet<Vector2d> notFavouritePlacesForPlants;
+    protected HashSet<IMapTile> jungleTiles;
+    protected HashSet<IMapTile> plainTiles;
     protected int day;
-
     protected int width;
     protected int height;
-
-
-
-    public void growPlants() {
-        ArrayList<Vector2d> favList = new ArrayList<>(this.favouritesPlacesForPlants);
-        ArrayList<Vector2d> notFavList = new ArrayList<>(this.notFavouritePlacesForPlants);
-        float whichPlace;
-        int randInt;
-        for(int i=0;i<this.parametrs.getNumberOfGrowingPlants();++i) {
-            whichPlace = (float) Math.random();
-            if (whichPlace <= 0.8f && favList.size() > 0) {
-                randInt = (int) (Math.random() * favList.size());
-
-                this.plants.put(favList.get(randInt), new Plant(favList.get(randInt), this.parametrs.getEnergyFromPlant()));
-            }
-
-        }
-    }
 
     protected boolean isInScope(Vector2d position) {
         return (position.follows(this.lowerLeft) && position.precedes(upperRight));
@@ -57,7 +37,6 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
         }
         throw new IllegalArgumentException("Couldn't place animal on position " + animal.getPosition() + ".");
     }
-
     @Override
     public boolean isOccupied(Vector2d position) {
         return  this.mapElements.containsKey(position);
@@ -73,51 +52,46 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
     public String toString() {
         return new MapVisualizer(this).draw(this.lowerLeft, this.upperRight);
     }
-
     public Vector2d getLowerLeft() { return this.lowerLeft; }
     public Vector2d getUpperRight() { return this.upperRight; }
-
     public void dayPassed() {
         this.day += 1;
     }
-
     public int getDay() {
         return this.day;
     }
-
     @Override
     public void positionChanged(Vector2d oldPosition, Vector2d newPosition) {
         Animal animal = (Animal)this.mapElements.get(oldPosition);
         this.mapElements.remove(oldPosition);
         this.mapElements.put(newPosition, animal);
     }
-
     public boolean isTherePlant(Vector2d pos){
         return (objectAt(pos) instanceof Plant);
     }
-
     abstract Map<Vector2d, IMapTile> generateTiles();
-
     public IMapTile getTileAtPosition(Vector2d pos){
         return tiles.get(pos);
     }
-
-    public void growNPlants(int n){
-        for (int i = 0; i < 0.8*n; i++) {
-                Vector2d pos = new Vector2d((int) (Math.random()*parametrs.getMapWidth()), (int) (Math.random()*parametrs.getMapHeight()));
-                while(!(isOccupied(pos)||getTileAtPosition(pos)instanceof JungleTile)){
-                    pos = new Vector2d((int) (Math.random()*parametrs.getMapWidth()), (int) (Math.random()*parametrs.getMapHeight()));
+    public void growNPlants() {
+        int n = this.parametrs.getNumberOfGrowingPlants();
+        for (int i = 0; i < n; i++) {
+            float randF = (float) (Math.random());
+            if (randF <= 0.8f) {
+                Vector2d pos = new Vector2d((int) (Math.random() * parametrs.getMapWidth()), (int) (Math.random() * parametrs.getMapHeight()));
+                while (!(isOccupied(pos) || getTileAtPosition(pos) instanceof JungleTile)) {
+                    pos = new Vector2d((int) (Math.random() * parametrs.getMapWidth()), (int) (Math.random() * parametrs.getMapHeight()));
                 }
                 Plant p = new Plant(pos, parametrs.getEnergyFromPlant());
-                mapElements.put(pos,p);
+                mapElements.put(pos, p);
+            } else {
+                Vector2d pos = new Vector2d((int) (Math.random() * parametrs.getMapWidth()), (int) (Math.random() * parametrs.getMapHeight()));
+                while (isOccupied(pos) && !(getTileAtPosition(pos) instanceof PlainsTile)) {
+                    pos = new Vector2d((int) (Math.random() * parametrs.getMapWidth()), (int) (Math.random() * parametrs.getMapHeight()));
+                }
+                Plant p = new Plant(pos, parametrs.getEnergyFromPlant());
+                mapElements.put(pos, p);
             }
-        for (int i = (int) Math.floor(0.8*n); i<n; i++){
-                Vector2d pos = new Vector2d((int) (Math.random()*parametrs.getMapWidth()), (int) (Math.random()*parametrs.getMapHeight()));
-                while(isOccupied(pos)&& !(getTileAtPosition(pos)instanceof PlainsTile)){
-                    pos = new Vector2d((int) (Math.random()*parametrs.getMapWidth()), (int) (Math.random()*parametrs.getMapHeight()));
-                }
-                Plant p = new Plant(pos, parametrs.getEnergyFromPlant());
-                mapElements.put(pos,p);
         }
     }
 
