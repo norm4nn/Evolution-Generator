@@ -1,4 +1,5 @@
 package agh.ics.oop;
+import java.awt.*;
 import java.util.*;
 
 import java.util.Comparator;
@@ -9,14 +10,13 @@ import java.util.TreeSet;
 
 public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObserver{
     protected HashMap<Vector2d, AbstractWorldMapElement> mapElements = new HashMap<>();
-    protected HashMap<Vector2d, Plant> plants = new HashMap<>();
+    public HashMap<Vector2d, Plant> plants = new HashMap<>();
     protected HashMap<Vector2d, IMapTile> tiles;
     protected HashMap<Vector2d, IMapTile> jungleTiles;
     protected HashMap<Vector2d, IMapTile> plainTiles;
     protected Parametrs parametrs;
     protected Vector2d lowerLeft;
     protected Vector2d upperRight;
-
     protected int day;
     protected int width;
     protected int height;
@@ -27,7 +27,7 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
 
     @Override
     public boolean canMoveTo(Vector2d position) {
-        return isInScope(position) && !(objectAt(position) instanceof Animal);
+        return isInScope(position); //&& !(objectAt(position) instanceof Animal);
     }
 
     @Override
@@ -66,9 +66,10 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
         Animal animal = (Animal)this.mapElements.get(oldPosition);
         this.mapElements.remove(oldPosition);
         this.mapElements.put(newPosition, animal);
+        System.out.println(oldPosition.toString() + ' ' + newPosition);
     }
-    public boolean isTherePlant(Vector2d pos){
-        return (objectAt(pos) instanceof Plant);
+    public Object isTherePlant(Vector2d pos){
+        return this.plants.get(pos);
     }
     abstract ArrayList<HashMap<Vector2d, IMapTile>> generateTiles();
     public IMapTile getTileAtPosition(Vector2d pos){
@@ -84,7 +85,7 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
                     pos = new Vector2d((int) (Math.random() * parametrs.getMapWidth()), (int) (Math.random() * parametrs.getMapHeight()));
                 }
                 Plant p = new Plant(pos, parametrs.getEnergyFromPlant());
-                mapElements.put(pos, p);
+                this.plants.put(pos, p);
                 this.jungleTiles.remove(pos);
             } else {
                 Vector2d pos = new Vector2d((int) (Math.random() * parametrs.getMapWidth()), (int) (Math.random() * parametrs.getMapHeight()));
@@ -92,10 +93,14 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
                     pos = new Vector2d((int) (Math.random() * parametrs.getMapWidth()), (int) (Math.random() * parametrs.getMapHeight()));
                 }
                 Plant p = new Plant(pos, parametrs.getEnergyFromPlant());
-                mapElements.put(pos, p);
+                this.plants.put(pos, p);
                 this.plainTiles.remove(pos);
             }
         }
+    }
+
+    public void plantGotEaten(Vector2d pos) {
+        this.plants.remove(pos);
     }
 
 //    public void positionChanged(Vector2d oldPosition, Vector2d newPosition){

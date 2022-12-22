@@ -2,11 +2,12 @@ package agh.ics.oop;
 
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
 public class Animal extends AbstractWorldMapElement {
 
     final private ArrayList<IPositionChangeObserver> positionChangeObservers;
-
+    final public int id;
     final private Parametrs parametrs;
     private int age = 0;
     private int energy;
@@ -17,6 +18,7 @@ public class Animal extends AbstractWorldMapElement {
     private boolean breeded;
 
     public Animal(AbstractWorldMap map, Parametrs parametrs) {
+        this.id = parametrs.getIdForAnimal();
         this.map = map;
         this.direction = new MoveDirection();
         this.dayOfDeath = -1;
@@ -33,6 +35,7 @@ public class Animal extends AbstractWorldMapElement {
     }
 
     public Animal(AbstractWorldMap map, Parametrs parametrs, Animal parent1, Animal parent2) {
+        this.id = parametrs.getIdForAnimal();
         this.direction = new MoveDirection();
         this.map = map;
         this.dayOfDeath = -1;
@@ -78,11 +81,12 @@ public class Animal extends AbstractWorldMapElement {
     public void eat(Plant plant) {
         this.energy += plant.getEnergy();
 
-        if (this.map.getTileAtPosition(plant.getPosition()) instanceof JungleTile tile)
-            this.map.jungleTiles.put(plant.getPosition(), tile);
+        if (this.map.getTileAtPosition(plant.getPosition()) instanceof JungleTile)
+            this.map.jungleTiles.put(plant.getPosition(), new JungleTile());
         else
             this.map.plainTiles.put(plant.getPosition(), new PlainsTile());
 
+        map.plantGotEaten(plant.getPosition());
     }
 
     public boolean isFedUp() {
@@ -95,16 +99,22 @@ public class Animal extends AbstractWorldMapElement {
     }
 
     public void move() {
+        this.breeded = false;
         this.age += 1;
         this.energy -= 1;
         this.direction.add(this.genotype.useGen());
-        Vector2d oldPosition = this.getPosition();
-        this.position.add(this.direction.parseToVector2d());
-        positionChanged(oldPosition, this.getPosition());
+        Vector2d oldPosition = this.position;
+        this.position = this.position.add(this.direction.parseToVector2d());
+        if (!this.map.canMoveTo(this.position)) {
+            this.map.reactToGoingOut(this);
+            positionChanged(oldPosition, this.position);
+        }
+        else {
+            positionChanged(oldPosition, this.position);
+        }
     }
 
     public MoveDirection getDirection() {
-        this.breeded = false;
         return this.direction;
     }
 
@@ -133,7 +143,7 @@ public class Animal extends AbstractWorldMapElement {
     }
 
     public Genotype getGenotype() {
-        return genotype;
+        return this.genotype;
     }
 
     public void setDayOfDeath(int dayOfDeath) {
@@ -141,19 +151,23 @@ public class Animal extends AbstractWorldMapElement {
     }
 
     public int getDayOfDeath() {
-        return dayOfDeath;
+        return this.dayOfDeath;
     }
 
     public int getAmountOfChildren() {
-        return amountOfChildren;
+        return this.amountOfChildren;
     }
 
     public int getEnergy() {
-        return energy;
+        return this.energy;
     }
 
     public int getAge() {
-        return age;
+        return this.age;
+    }
+
+    public int getId() {
+        return this.id;
     }
 
     public boolean equals(Object other) {
@@ -162,7 +176,7 @@ public class Animal extends AbstractWorldMapElement {
         if (!(other instanceof final Animal that))
             return false;
 
-        return this.position.equals(that.position) && this.energy == that.energy && this.age == that.age
+        return this.id == that.id && this.position.equals(that.position) && this.energy == that.energy && this.age == that.age
                 && this.amountOfChildren == that.amountOfChildren && this.breeded == that.breeded;
     }
 
@@ -171,4 +185,26 @@ public class Animal extends AbstractWorldMapElement {
     }
 
 
+    static class myAnimalComparator implements Comparator<Animal> {
+
+        @Override
+        public int compare(Animal a1, Animal a2) {
+            if (a1.getPosition().equals(a2.getPosition())) {
+                if (a2.getEnergy() == a1.getEnergy()) {
+                    if (a2.getAge() == a1.getAge())
+                        if (a2.getAmountOfChildren() == a1.getAmountOfChildren())
+                            return a2.getId() - a1.getId();
+                        else
+                            return a2.getAmountOfChildren() - a1.getAmountOfChildren();
+                    return a2.getAge() - a1.getAge();
+                }
+                return a2.getEnergy() - a1.getEnergy();
+            }
+            if (a1.getPosition().getX() == a2.getPosition().getX())
+                return a1.getPosition().getY() - a2.getPosition().getY();
+            return a1.getPosition().getX() - a2.getPosition().getX();
+        }
+
+
+    }
 }

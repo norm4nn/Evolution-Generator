@@ -2,7 +2,6 @@ package agh.ics.oop;
 
 
 public class Plant extends AbstractWorldMapElement {
-    final private Vector2d position;
     final private int providesEnergy;
 
 

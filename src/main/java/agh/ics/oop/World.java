@@ -7,7 +7,7 @@ public class World {
     public static void main(String[] args) {
         try {
 //            Application.launch(App.class, args);
-            SimulationEngine engine = new SimulationEngine(new Parametrs(10, 10, 30,
+            SimulationEngine engine = new SimulationEngine(new Parametrs(4, 4, 30,
                     5, 5, 100, 30,
                     15, 1, 8, 8 ));
             engine.run();

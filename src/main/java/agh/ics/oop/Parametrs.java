@@ -16,6 +16,7 @@ public class Parametrs {
 //    final private int mutationVariant;
     final private int genotypeLength;
 //    final private int behaviourVarinat;
+    private int idForAnimal;
 
     public Parametrs(int mapWidth, int mapHeight, int energyFromPlant, int numberOfGrowingPlants, int startingAmountOfAnimals,
               int startingAmountOfEnergy, int minEnergyToBreed, int usedEnergyToBreed, int minNumberOfMutations,
@@ -31,6 +32,8 @@ public class Parametrs {
         this.minNumberOfMutations = minNumberOfMutations;
         this.maxNumberOfMutations = maxNumberOfMutations;
         this.genotypeLength = genotypeLength;
+
+        this.idForAnimal = 0;
     }
 
     public int getMapWidth() {
@@ -75,5 +78,9 @@ public class Parametrs {
 
     public int getGenotypeLength() {
         return genotypeLength;
+    }
+
+    public int getIdForAnimal() {
+        return this.idForAnimal++;
     }
 }

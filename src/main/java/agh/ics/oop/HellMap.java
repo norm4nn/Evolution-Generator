@@ -25,7 +25,8 @@ public class HellMap extends AbstractWorldMap{
         while(isOccupied(pos)){
             pos = new Vector2d((int) (Math.random()*parametrs.getMapWidth()), (int) (Math.random()*parametrs.getMapHeight()));
         }
-        this.positionChanged(a.getPosition(), pos);
+        a.position = pos;
+//        this.positionChanged(a.getPosition(), pos);
 
     }
 

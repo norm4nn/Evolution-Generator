@@ -1,33 +1,13 @@
 package agh.ics.oop;
 
-import agh.ics.oop.gui.App;
-import javafx.application.Platform;
-
 import java.util.*;
 
 public class SimulationEngine implements IEngine, Runnable, IAnimalChangeObserver {
     private AbstractWorldMap map;
 //    private final App app;
     private final Parametrs parametrs;
-    private final int delay = 300;
-
-    protected TreeSet<Animal> animals = new TreeSet<Animal>(new Comparator<Animal>() {
-        @Override
-        public int compare(Animal a1, Animal a2) {
-            if (a1.getPosition().equals(a2.getPosition())) {
-                if (a1.getEnergy() == a2.getEnergy()) {
-                    if (a1.getAge() == a2.getAge())
-                        return a1.getAmountOfChildren() - a2.getAmountOfChildren();
-                    return a1.getAge() - a2.getAge();
-                }
-                return a1.getEnergy() - a2.getEnergy();
-            }
-            if (a1.getPosition().getX() == a2.getPosition().getX())
-                return a1.getPosition().getY() - a2.getPosition().getY();
-            return a1.getPosition().getX() - a2.getPosition().getX();
-            }
-
-    });
+    private final int delay = 1000;
+    private TreeSet<Animal> animals = new TreeSet<Animal>(new Animal.myAnimalComparator());
 
     public SimulationEngine( Parametrs parametrs) throws IllegalArgumentException {
 
@@ -44,18 +24,43 @@ public class SimulationEngine implements IEngine, Runnable, IAnimalChangeObserve
 
 //    @Override
     public void run() {
-        System.out.println(new MapVisualizer(this.map).draw(this.map.getLowerLeft(), this.map.getUpperRight()));
-//        for(Animal animal : this.animals) {
-//
-//        }
+        while (true) {
+            System.out.println(new MapVisualizer(this.map).draw(this.map.getLowerLeft(), this.map.getUpperRight()));
+            try {
+                Thread.sleep(delay);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            this.moveStage();
+            this.sortTreeset();
+            this.eatStage();
+        }
     }
 
-    public void deadCheck() {
+    private void eatStage() {
         for(Animal animal : this.animals) {
-            animal.isAlive();
+            if (this.map.isTherePlant(animal.getPosition()) instanceof Plant plant)
+                animal.eat(plant);
         }
+    }
+
+    private void deadCheckStage() {
+        this.animals.removeIf(animal -> !animal.isAlive());
+
         MapVisualizer visualizer = new MapVisualizer(map);
         System.out.println(visualizer.draw(map.getLowerLeft(),map.getUpperRight()));
+    }
+
+    private void moveStage() {
+        for (Animal animal : this.animals) {
+            animal.move();
+        }
+    }
+
+    private void sortTreeset() {
+        TreeSet<Animal> tempAnimals = new TreeSet<Animal>(new Animal.myAnimalComparator());
+        tempAnimals.addAll(this.animals);
+        this.animals = (TreeSet<Animal>) tempAnimals.clone();
     }
 
     @Override

@@ -10,13 +10,13 @@ public class MapVisualizer {
     private static final String EMPTY_CELL = " ";
     private static final String FRAME_SEGMENT = "-";
     private static final String CELL_SEGMENT = "|";
-    private IWorldMap map;
+    private AbstractWorldMap map;
 
     /**
      * Initializes the MapVisualizer with an instance of map to visualize.
      * @param map
      */
-    public MapVisualizer(IWorldMap map) {
+    public MapVisualizer(AbstractWorldMap map) {
         this.map = map;
     }
 
@@ -42,7 +42,12 @@ public class MapVisualizer {
                 } else {
                     builder.append(CELL_SEGMENT);
                     if (j <= upperRight.getX()) {
-                        builder.append(drawObject(new Vector2d(j, i)));
+                        String a = drawObject(new Vector2d(j, i));
+                        if (a.equals(EMPTY_CELL))
+                            a = drawPlant(new Vector2d(j, i));
+
+                        builder.append(a);
+
                     }
                 }
             }
@@ -72,15 +77,23 @@ public class MapVisualizer {
     private String drawObject(Vector2d currentPosition) {
         String result = null;
         if (this.map.isOccupied(currentPosition)) {
-            Object object = this.map.objectAt(currentPosition);
-            if (object != null) {
-                result = object.toString();
+                result = "A";//object.toString();
+            }else {
+                result = EMPTY_CELL;
+            }
+
+        return result;
+    }
+
+    private String drawPlant(Vector2d currentPosition) {
+        String result = null;
+        if (this.map.plants.containsKey(currentPosition)) {
+
+                result = "P";//object.toString();
             } else {
                 result = EMPTY_CELL;
             }
-        } else {
-            result = EMPTY_CELL;
-        }
+
         return result;
     }
 }
