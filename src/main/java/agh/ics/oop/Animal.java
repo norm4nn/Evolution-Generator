@@ -30,7 +30,7 @@ public class Animal extends AbstractWorldMapElement {
         this.energy = parametrs.getStartingAmountOfEnergy();
         this.positionChangeObservers = new ArrayList<>();
         this.addObserver(this.map);
-        addObserver((IPositionChangeObserver) map);
+//        this.addObserver((IPositionChangeObserver) map);
         this.breeded = false;
     }
 
@@ -45,7 +45,8 @@ public class Animal extends AbstractWorldMapElement {
         this.age = 0;
         this.energy = this.parametrs.getUsedEnergyToBreed() * 2;
         this.positionChangeObservers = new ArrayList<>();
-        addObserver((IPositionChangeObserver) map);
+        this.addObserver(this.map);
+//        this.addObserver((IPositionChangeObserver) map);
         this.breeded = false;
 
         int sumOfEnergy = parent1.getEnergy() + parent2.getEnergy();
@@ -89,8 +90,12 @@ public class Animal extends AbstractWorldMapElement {
         map.plantGotEaten(plant.getPosition());
     }
 
-    public boolean isFedUp() {
+    private boolean isFedUp() {
         return this.energy >= this.parametrs.getMinEnergyToBreed();
+    }
+
+    public boolean canBreed() {
+        return this.isFedUp() && !this.breeded;
     }
 
 

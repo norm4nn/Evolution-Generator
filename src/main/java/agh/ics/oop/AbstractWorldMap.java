@@ -4,6 +4,7 @@ import java.util.*;
 
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
 
@@ -66,7 +67,7 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
         Animal animal = (Animal)this.mapElements.get(oldPosition);
         this.mapElements.remove(oldPosition);
         this.mapElements.put(newPosition, animal);
-        System.out.println(oldPosition.toString() + ' ' + newPosition);
+//        System.out.println(oldPosition.toString() + ' ' + newPosition);
     }
     public Object isTherePlant(Vector2d pos){
         return this.plants.get(pos);
@@ -80,29 +81,44 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
         for (int i = 0; i < n; i++) {
             float randF = (float) (Math.random());
             if (randF <= 0.8f) {
-                Vector2d pos = new Vector2d((int) (Math.random() * parametrs.getMapWidth()), (int) (Math.random() * parametrs.getMapHeight()));
-                while (!(isOccupied(pos) || getTileAtPosition(pos) instanceof JungleTile)) {
-                    pos = new Vector2d((int) (Math.random() * parametrs.getMapWidth()), (int) (Math.random() * parametrs.getMapHeight()));
-                }
-                Plant p = new Plant(pos, parametrs.getEnergyFromPlant());
-                this.plants.put(pos, p);
-                this.jungleTiles.remove(pos);
+                if (this.jungleTiles.size() > 0)
+                    this.growOnJungleTile();
+                else
+                    this.growOnPlainTile();
             } else {
-                Vector2d pos = new Vector2d((int) (Math.random() * parametrs.getMapWidth()), (int) (Math.random() * parametrs.getMapHeight()));
-                while (isOccupied(pos) && !(getTileAtPosition(pos) instanceof PlainsTile)) {
-                    pos = new Vector2d((int) (Math.random() * parametrs.getMapWidth()), (int) (Math.random() * parametrs.getMapHeight()));
-                }
-                Plant p = new Plant(pos, parametrs.getEnergyFromPlant());
-                this.plants.put(pos, p);
-                this.plainTiles.remove(pos);
+                if (this.plainTiles.size() > 0)
+                    this.growOnJungleTile();
+                else
+                    this.growOnPlainTile();
             }
         }
     }
 
+    private void growOnJungleTile() {
+        if (this.jungleTiles.size() <= 0)   return;
+        List<Vector2d> keysAsArray = new ArrayList<>(this.jungleTiles.keySet());
+        Random r = new Random();
+        Vector2d pos = keysAsArray.get(r.nextInt(keysAsArray.size()));
+        this.jungleTiles.remove(pos);
+        this.plants.put(pos, new Plant(pos, this.parametrs.getEnergyFromPlant()));
+    }
+
+    private void growOnPlainTile() {
+        if (this.plainTiles.size() <= 0)   return;
+        List<Vector2d> keysAsArray = new ArrayList<>(this.plainTiles.keySet());
+        Random r = new Random();
+        Vector2d pos = keysAsArray.get(r.nextInt(keysAsArray.size()));
+        this.plainTiles.remove(pos);
+        this.plants.put(pos, new Plant(pos, this.parametrs.getEnergyFromPlant()));
+    }
+
+
     public void plantGotEaten(Vector2d pos) {
         this.plants.remove(pos);
     }
-
+    public void removeAnimal(Vector2d pos) {
+        this.mapElements.remove(pos);
+    }
 //    public void positionChanged(Vector2d oldPosition, Vector2d newPosition){
 //        Animal a = (Animal) objectAt(oldPosition);
 //        Animal a2 = null;

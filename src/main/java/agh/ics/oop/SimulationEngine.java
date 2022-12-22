@@ -24,8 +24,9 @@ public class SimulationEngine implements IEngine, Runnable, IAnimalChangeObserve
 
 //    @Override
     public void run() {
-        while (true) {
-            System.out.println(new MapVisualizer(this.map).draw(this.map.getLowerLeft(), this.map.getUpperRight()));
+        while (this.animals.size() > 0) {
+
+//            System.out.println(new MapVisualizer(this.map).draw(this.map.getLowerLeft(), this.map.getUpperRight()));
             try {
                 Thread.sleep(delay);
             } catch (InterruptedException e) {
@@ -33,7 +34,21 @@ public class SimulationEngine implements IEngine, Runnable, IAnimalChangeObserve
             }
             this.moveStage();
             this.sortTreeset();
+
+            this.deadCheckStage();
+            this.sortTreeset();
+
             this.eatStage();
+            this.sortTreeset();
+
+            this.breedStage();
+            this.sortTreeset();
+
+
+
+            this.mapUpdateStage();
+            System.out.println(new MapVisualizer(this.map).draw(this.map.getLowerLeft(), this.map.getUpperRight()));
+            System.out.println(this.map.plants.size());
         }
     }
 
@@ -44,11 +59,37 @@ public class SimulationEngine implements IEngine, Runnable, IAnimalChangeObserve
         }
     }
 
-    private void deadCheckStage() {
-        this.animals.removeIf(animal -> !animal.isAlive());
+    private void breedStage() {
+        Object prev = null;
+        LinkedList<Animal> babies = new LinkedList<>();
+        for(Animal animal : this.animals) {
+            if (prev instanceof Animal prevAnimal && prevAnimal.getPosition().equals(animal.getPosition()) && prevAnimal.canBreed() && animal.canBreed()) {
+                Animal babyAnimal = new Animal(this.map, this.parametrs, prevAnimal, animal);
+                this.map.place(babyAnimal);
+                babies.push(babyAnimal);
+            }
+            prev = animal;
+        }
+        this.animals.addAll(babies);
+    }
 
-        MapVisualizer visualizer = new MapVisualizer(map);
-        System.out.println(visualizer.draw(map.getLowerLeft(),map.getUpperRight()));
+    private void deadCheckStage() {
+        LinkedList<Animal> deadAnimals = new LinkedList<>();
+        for(Animal animal : this.animals) {
+//            System.out.println(animal.getEnergy());
+            if (!animal.isAlive()) {
+                deadAnimals.push(animal);
+                this.map.removeAnimal(animal.getPosition());
+
+            }
+        }
+        this.animals.removeAll(deadAnimals);
+
+    }
+
+    private void mapUpdateStage() {
+        this.map.growNPlants();
+        this.map.dayPassed();
     }
 
     private void moveStage() {
@@ -58,7 +99,7 @@ public class SimulationEngine implements IEngine, Runnable, IAnimalChangeObserve
     }
 
     private void sortTreeset() {
-        TreeSet<Animal> tempAnimals = new TreeSet<Animal>(new Animal.myAnimalComparator());
+        TreeSet<Animal> tempAnimals = new TreeSet<>(new Animal.myAnimalComparator());
         tempAnimals.addAll(this.animals);
         this.animals = (TreeSet<Animal>) tempAnimals.clone();
     }
@@ -68,6 +109,8 @@ public class SimulationEngine implements IEngine, Runnable, IAnimalChangeObserve
         this.animals.remove(oldAnimal);
         this.animals.add(newAnimal);
     }
+
+
 
 
 }

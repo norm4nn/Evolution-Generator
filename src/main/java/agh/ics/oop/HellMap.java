@@ -33,7 +33,7 @@ public class HellMap extends AbstractWorldMap{
     public ArrayList<HashMap<Vector2d, IMapTile>> generateTiles(){
         int jungleRows = (int) Math.ceil(0.2 * height);
         int midJungleRows = (int) Math.ceil(0.5 * height);
-        System.out.println(Integer.toString(jungleRows) + ", " + Integer.toString(midJungleRows));
+//        System.out.println(Integer.toString(jungleRows) + ", " + Integer.toString(midJungleRows));
         HashMap<Vector2d, IMapTile> newTiles = new HashMap<>();
         HashMap<Vector2d, IMapTile> jungleTiles = new HashMap<>();
         HashMap<Vector2d, IMapTile> plainsTiles = new HashMap<>();

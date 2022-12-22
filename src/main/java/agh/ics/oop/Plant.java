@@ -16,7 +16,7 @@ public class Plant extends AbstractWorldMapElement {
     }
 
     public int getEnergy() {
-        return providesEnergy;
+        return this.providesEnergy;
     }
 
     @Override
