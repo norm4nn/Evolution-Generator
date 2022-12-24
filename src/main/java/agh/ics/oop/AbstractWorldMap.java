@@ -119,6 +119,14 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
     public void removeAnimal(Vector2d pos) {
         this.mapElements.remove(pos);
     }
+
+    public int getWidth() {
+        return this.width;
+    }
+
+    public int getHeight() {
+        return this.height;
+    }
 //    public void positionChanged(Vector2d oldPosition, Vector2d newPosition){
 //        Animal a = (Animal) objectAt(oldPosition);
 //        Animal a2 = null;

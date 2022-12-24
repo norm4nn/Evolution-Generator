@@ -1,5 +1,8 @@
 package agh.ics.oop;
 
+import agh.ics.oop.gui.App;
+import javafx.application.Application;
+
 import java.util.*;
 
 public class SimulationEngine implements IEngine, Runnable, IAnimalChangeObserver {
@@ -13,7 +16,6 @@ public class SimulationEngine implements IEngine, Runnable, IAnimalChangeObserve
 
         this.parametrs = parametrs;
         this.map = new HellMap(parametrs);
-
             for(int i=0; i < this.parametrs.getStartingAmountOfAnimals(); i++) {
                 Animal animal = new Animal(this.map, this.parametrs);
                 this.map.place(animal);
@@ -110,7 +112,9 @@ public class SimulationEngine implements IEngine, Runnable, IAnimalChangeObserve
         this.animals.add(newAnimal);
     }
 
-
+    public AbstractWorldMap getMap() {
+        return this.map;
+    }
 
 
 }
