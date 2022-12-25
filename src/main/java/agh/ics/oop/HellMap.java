@@ -13,7 +13,7 @@ public class HellMap extends AbstractWorldMap{
         this.height = parametrs.getMapHeight();
         this.parametrs = parametrs;
         this.lowerLeft = new Vector2d(0,0);
-        this.upperRight = new Vector2d(width,height);
+        this.upperRight = new Vector2d(width-1,height-1);
         ArrayList<HashMap<Vector2d, IMapTile>> temp = generateTiles();
         this.tiles = temp.get(0);
         this.jungleTiles = temp.get(1);

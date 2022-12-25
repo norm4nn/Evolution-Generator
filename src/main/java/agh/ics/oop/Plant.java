@@ -12,7 +12,7 @@ public class Plant extends AbstractWorldMapElement {
 
     @Override
     public String imgAddress() {
-        return "P";
+        return "src/main/resources/plant.png";
     }
 
     public int getEnergy() {

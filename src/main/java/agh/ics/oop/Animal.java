@@ -17,11 +17,14 @@ public class Animal extends AbstractWorldMapElement {
     private MoveDirection direction;
     private boolean breeded;
 
+    private int numberOfEatenPlants;
+
     public Animal(AbstractWorldMap map, Parametrs parametrs) {
         this.id = parametrs.getIdForAnimal();
         this.map = map;
         this.direction = new MoveDirection();
         this.dayOfDeath = -1;
+        this.numberOfEatenPlants = 0;
         this.parametrs = parametrs;
         this.amountOfChildren = 0;
         this.age = 0;
@@ -30,7 +33,6 @@ public class Animal extends AbstractWorldMapElement {
         this.energy = parametrs.getStartingAmountOfEnergy();
         this.positionChangeObservers = new ArrayList<>();
         this.addObserver(this.map);
-//        this.addObserver((IPositionChangeObserver) map);
         this.breeded = false;
     }
 
@@ -42,11 +44,11 @@ public class Animal extends AbstractWorldMapElement {
         this.parametrs = parametrs;
         this.position = parent1.getPosition();
         this.amountOfChildren = 0;
+        this.numberOfEatenPlants = 0;
         this.age = 0;
         this.energy = this.parametrs.getUsedEnergyToBreed() * 2;
         this.positionChangeObservers = new ArrayList<>();
         this.addObserver(this.map);
-//        this.addObserver((IPositionChangeObserver) map);
         this.breeded = false;
 
         int sumOfEnergy = parent1.getEnergy() + parent2.getEnergy();
@@ -81,7 +83,7 @@ public class Animal extends AbstractWorldMapElement {
 
     public void eat(Plant plant) {
         this.energy += plant.getEnergy();
-
+        this.numberOfEatenPlants += 1;
         if (this.map.getTileAtPosition(plant.getPosition()) instanceof JungleTile)
             this.map.jungleTiles.put(plant.getPosition(), new JungleTile());
         else
@@ -139,7 +141,7 @@ public class Animal extends AbstractWorldMapElement {
 
     @Override
     public String imgAddress() {
-        return "A";
+        return "src/main/resources/animal.png";
     }
 
     @Override

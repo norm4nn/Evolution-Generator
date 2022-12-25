@@ -23,21 +23,13 @@ public class GuiElementBox {
             System.out.println("Nie znaleziono pliku");
         }
 
-        Label orientationLabel;
-
-        if (element instanceof Animal) //Animal case
-            orientationLabel = new Label(element.getPosition().toString());
-        else //Grass case
-            orientationLabel = new Label("Grass");
-
-
         ImageView imageView = new ImageView(image);
         imageView.setFitWidth(20);
         imageView.setFitHeight(20);
 
-        this.vBox = new VBox(imageView, orientationLabel);
+        this.vBox = new VBox(imageView);
 
-        this.vBox.setAlignment(Pos.TOP_CENTER);
+        this.vBox.setAlignment(Pos.CENTER);
     }
 
     public VBox getvBox() {
