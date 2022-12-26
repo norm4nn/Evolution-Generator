@@ -4,6 +4,7 @@ public class Parametrs {
     final private int mapWidth;
     final private int mapHeight;
 //    final private int mapVariant;
+    final private int startingAmountOfPlants;
     final private int energyFromPlant;
     final private int numberOfGrowingPlants;
 //    final private int growingPlantsVariant;
@@ -16,13 +17,15 @@ public class Parametrs {
 //    final private int mutationVariant;
     final private int genotypeLength;
 //    final private int behaviourVarinat;
+    final private boolean saveStatsToFile;
     private int idForAnimal;
 
-    public Parametrs(int mapWidth, int mapHeight, int energyFromPlant, int numberOfGrowingPlants, int startingAmountOfAnimals,
+    public Parametrs(int mapWidth, int mapHeight,  int startingAmountOfPlants, int energyFromPlant, int numberOfGrowingPlants, int startingAmountOfAnimals,
               int startingAmountOfEnergy, int minEnergyToBreed, int usedEnergyToBreed, int minNumberOfMutations,
-              int maxNumberOfMutations, int genotypeLength) {
+              int maxNumberOfMutations, int genotypeLength, boolean saveStatsToFile) {
         this.mapWidth = mapWidth;
         this.mapHeight = mapHeight;
+        this.startingAmountOfPlants = startingAmountOfPlants;
         this.energyFromPlant = energyFromPlant;
         this.numberOfGrowingPlants = numberOfGrowingPlants;
         this.startingAmountOfAnimals = startingAmountOfAnimals;
@@ -32,7 +35,7 @@ public class Parametrs {
         this.minNumberOfMutations = minNumberOfMutations;
         this.maxNumberOfMutations = maxNumberOfMutations;
         this.genotypeLength = genotypeLength;
-
+        this.saveStatsToFile = saveStatsToFile;
         this.idForAnimal = 0;
     }
 
@@ -82,5 +85,9 @@ public class Parametrs {
 
     public int getIdForAnimal() {
         return this.idForAnimal++;
+    }
+
+    public int getStartingAmountOfPlants() {
+        return startingAmountOfPlants;
     }
 }

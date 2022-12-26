@@ -9,7 +9,7 @@ import java.util.*;
 public class SimulationEngine implements IEngine, Runnable, IAnimalChangeObserver {
     private AbstractWorldMap map;
     private final Parametrs parametrs;
-    private final int delay = 1000;
+    private final int delay = 2000;
     private TreeSet<Animal> animals = new TreeSet<Animal>(new Animal.myAnimalComparator());
     private final LinkedList<Animal> deadAnimals = new LinkedList<>();
     private final App app;
@@ -20,6 +20,7 @@ public class SimulationEngine implements IEngine, Runnable, IAnimalChangeObserve
     private int averageEnergy;
     private int averageLifespan;
 
+
     public SimulationEngine( Parametrs parametrs, App app) throws IllegalArgumentException {
         this.app = app;
         this.parametrs = parametrs;
@@ -29,7 +30,7 @@ public class SimulationEngine implements IEngine, Runnable, IAnimalChangeObserve
                 this.map.place(animal);
                 this.animals.add(animal);
             }
-            this.map.growNPlants();
+            this.map.growNPlants(this.parametrs.getStartingAmountOfPlants());
 //        System.out.println(new MapVisualizer(this.map).draw(this.map.getLowerLeft(), this.map.getUpperRight()));
     }
 
@@ -107,15 +108,16 @@ public class SimulationEngine implements IEngine, Runnable, IAnimalChangeObserve
     }
 
     private void mapUpdateStage() {
-
+        this.map.growNPlants(this.parametrs.getNumberOfGrowingPlants());
+        this.map.dayPassed();
         int tempSumOfAge = 0;
         int tempSumOfEnergy = 0;
-        HashMap<Genotype, Integer> genotypesMap = new HashMap<>();
+        HashMap<int[], Integer> genotypesMap = new HashMap<>();
         for(Animal animal : this.animals){
-            if (genotypesMap.containsKey(animal.getGenotype()))
-                genotypesMap.put(animal.getGenotype(), genotypesMap.get(animal.getGenotype()) + 1);
+            if (genotypesMap.containsKey(animal.getGenotype().getGenotypeArray()))
+                genotypesMap.put(animal.getGenotype().getGenotypeArray(), genotypesMap.get(animal.getGenotype().getGenotypeArray()) + 1);
             else
-                genotypesMap.put(animal.getGenotype(), 1);
+                genotypesMap.put(animal.getGenotype().getGenotypeArray(), 1);
             this.map.mapElements.put(animal.getPosition(), animal);
             tempSumOfAge += animal.getAge();
             tempSumOfEnergy += animal.getEnergy();
@@ -124,16 +126,13 @@ public class SimulationEngine implements IEngine, Runnable, IAnimalChangeObserve
             tempSumOfAge += animal.getAge();
         }
 
-        this.mostPopularGenotype = genotypesMap.entrySet().stream().max((entry1, entry2) -> entry1.getValue() > entry2.getValue() ? 1 : -1).get().getKey().genotype;
-
-
+        this.mostPopularGenotype = genotypesMap.entrySet().stream().max((entry1, entry2) -> entry1.getValue() > entry2.getValue() ? 1 : -1).get().getKey();
         this.numberOfFreeTiles = this.map.getWidth()*this.map.getHeight() -  this.map.mapElements.size();
         this.numberOfAnimals = this.animals.size();
         this.numberOfPlants = this.map.plants.size();
         this.averageEnergy = tempSumOfEnergy/this.numberOfAnimals;
         this.averageLifespan = tempSumOfAge/(this.numberOfAnimals + this.deadAnimals.size());
-        this.map.growNPlants();
-        this.map.dayPassed();
+
     }
 
     private void moveStage() {
@@ -167,18 +166,20 @@ public class SimulationEngine implements IEngine, Runnable, IAnimalChangeObserve
     }
 
     public int getNumberOfFreeTiles() {
-        return numberOfFreeTiles;
+        return this.numberOfFreeTiles;
     }
 
     public int[] getMostPopularGenotype() {
-        return mostPopularGenotype;
+        return this.mostPopularGenotype;
     }
 
     public int getAverageEnergy() {
-        return averageEnergy;
+        return this.averageEnergy;
     }
 
     public int getAverageLifespan() {
-        return averageLifespan;
+        return this.averageLifespan;
     }
+
+
 }

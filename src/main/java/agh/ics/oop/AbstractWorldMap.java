@@ -67,7 +67,6 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
         Animal animal = (Animal)this.mapElements.get(oldPosition);
         this.mapElements.remove(oldPosition);
         this.mapElements.put(newPosition, animal);
-//        System.out.println(oldPosition.toString() + ' ' + newPosition);
     }
     public Object isTherePlant(Vector2d pos){
         return this.plants.get(pos);
@@ -76,8 +75,8 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
     public IMapTile getTileAtPosition(Vector2d pos){
         return tiles.get(pos);
     }
-    public void growNPlants() {
-        int n = this.parametrs.getNumberOfGrowingPlants();
+    public void growNPlants(int n) {
+//        int n = this.parametrs.getNumberOfGrowingPlants();
         for (int i = 0; i < n; i++) {
             float randF = (float) (Math.random());
             if (randF <= 0.8f) {
@@ -87,9 +86,9 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
                     this.growOnPlainTile();
             } else {
                 if (this.plainTiles.size() > 0)
-                    this.growOnJungleTile();
-                else
                     this.growOnPlainTile();
+                else
+                    this.growOnJungleTile();
             }
         }
     }

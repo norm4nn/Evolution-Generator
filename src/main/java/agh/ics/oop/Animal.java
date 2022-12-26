@@ -9,11 +9,11 @@ public class Animal extends AbstractWorldMapElement {
     final private ArrayList<IPositionChangeObserver> positionChangeObservers;
     final public int id;
     final private Parametrs parametrs;
-    private int age = 0;
+    private int age;
     private int energy;
     private int amountOfChildren;
     private int dayOfDeath;
-    final private Genotype genotype;
+    final private AbstractGenotype genotype;
     private MoveDirection direction;
     private boolean breeded;
 
@@ -149,7 +149,7 @@ public class Animal extends AbstractWorldMapElement {
         return "A";
     }
 
-    public Genotype getGenotype() {
+    public AbstractGenotype getGenotype() {
         return this.genotype;
     }
 
@@ -189,6 +189,10 @@ public class Animal extends AbstractWorldMapElement {
 
     public int hashCode() {
         return this.energy + this.age*10 + this.amountOfChildren*10 + this.position.getY()*100 + this.position.getX()*10;
+    }
+
+    public int getNumberOfEatenPlants() {
+        return numberOfEatenPlants;
     }
 
 

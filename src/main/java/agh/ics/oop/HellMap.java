@@ -21,10 +21,7 @@ public class HellMap extends AbstractWorldMap{
     }
 
     public void reactToGoingOut(Animal a){
-        Vector2d pos = new Vector2d((int) (Math.random()*parametrs.getMapWidth()), (int) (Math.random()*parametrs.getMapHeight()));
-        while(isOccupied(pos)){
-            pos = new Vector2d((int) (Math.random()*parametrs.getMapWidth()), (int) (Math.random()*parametrs.getMapHeight()));
-        }
+        Vector2d pos = new Vector2d((int) (Math.random()*parametrs.getMapWidth()), (int) (Math.random()*(parametrs.getMapHeight() - 1)));
         a.position = pos;
 //        this.positionChanged(a.getPosition(), pos);
 
@@ -38,14 +35,14 @@ public class HellMap extends AbstractWorldMap{
         HashMap<Vector2d, IMapTile> jungleTiles = new HashMap<>();
         HashMap<Vector2d, IMapTile> plainsTiles = new HashMap<>();
         for (int i = midJungleRows - (int) Math.ceil(jungleRows/2); i <= midJungleRows - (int) Math.ceil(jungleRows/2) + jungleRows; i++) {
-            for (int j = 0; j <= width; j++) {
+            for (int j = 0; j < width; j++) {
                 newTiles.put(new Vector2d(j, i), new JungleTile());
                 jungleTiles.put(new Vector2d(j, i), new JungleTile());
 
             }
         }
-        for (int i = 0; i <= width; i++) {
-            for (int j = 0; j <= height; j++) {
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
                 if(newTiles.containsKey(new Vector2d(i,j))){
                     continue;
                 }
