@@ -1,13 +1,19 @@
 package agh.ics.oop;
 
+import com.opencsv.CSVWriter;
+import java.io.FileWriter;
+
 import agh.ics.oop.gui.App;
+import com.opencsv.exceptions.CsvValidationException;
 import javafx.application.Application;
 import javafx.application.Platform;
 
+import java.io.IOException;
 import java.util.*;
 
 public class SimulationEngine implements IEngine, Runnable, IAnimalChangeObserver {
     private AbstractWorldMap map;
+    List<String[]> data = new ArrayList<>();
     private final Parametrs parametrs;
     private final int delay = 2000;
     private TreeSet<Animal> animals = new TreeSet<Animal>(new Animal.myAnimalComparator());
@@ -21,9 +27,13 @@ public class SimulationEngine implements IEngine, Runnable, IAnimalChangeObserve
     private int averageLifespan;
 
 
-    public SimulationEngine( Parametrs parametrs, App app) throws IllegalArgumentException {
+    public SimulationEngine( Parametrs parametrs, App app) throws IllegalArgumentException{
         this.app = app;
         this.parametrs = parametrs;
+
+        String[] header = {"Liczba zwierząt", "Liczba roślin", "Liczba wolnych pól", "Najpopularniejszy genotyp", "Średni poziom energii", "Średnia długość życia"};
+        data.add(header);
+
         this.map = new HellMap(parametrs);
             for(int i=0; i < this.parametrs.getStartingAmountOfAnimals(); i++) {
                 Animal animal = new Animal(this.map, this.parametrs);
@@ -51,7 +61,7 @@ public class SimulationEngine implements IEngine, Runnable, IAnimalChangeObserve
             this.sortTreeset();
 
             this.mapUpdateStage();
-
+            WriteLineCSV();
 //            System.out.println(new MapVisualizer(this.map).draw(this.map.getLowerLeft(), this.map.getUpperRight()));
             Platform.runLater(this.app::draw);
             try {
@@ -69,6 +79,10 @@ public class SimulationEngine implements IEngine, Runnable, IAnimalChangeObserve
                 }
             }
         }
+       try {CreateCSVFile();}
+       catch (IOException e){
+           System.out.println(e);
+       }
     }
 
     private void eatStage() {
@@ -181,5 +195,15 @@ public class SimulationEngine implements IEngine, Runnable, IAnimalChangeObserve
         return this.averageLifespan;
     }
 
-
+    public void CreateCSVFile() throws IOException{
+        if(parametrs.getSaveStatsToFile()){
+            try(CSVWriter writer1 = new CSVWriter(new FileWriter("SimulationData.csv"))){
+                writer1.writeAll(data);
+            }
+        }
+    }
+    public void WriteLineCSV(){
+        String[] newLine = {String.valueOf(this.getNumberOfAnimals()), String.valueOf(getNumberOfPlants()), String.valueOf(getNumberOfFreeTiles()), Arrays.toString(getMostPopularGenotype()), String.valueOf(getAverageEnergy()), String.valueOf(getAverageLifespan())};
+        data.add(newLine);
+    }
 }

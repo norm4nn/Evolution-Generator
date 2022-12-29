@@ -90,4 +90,6 @@ public class Parametrs {
     public int getStartingAmountOfPlants() {
         return startingAmountOfPlants;
     }
+
+    public boolean getSaveStatsToFile(){return saveStatsToFile;}
 }

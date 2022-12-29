@@ -16,6 +16,7 @@ import javafx.stage.Stage;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.LinkedList;
 
@@ -45,6 +46,10 @@ public class App extends Application {
         this.isRunning = true;
         this.toggleButton.setOnAction((event) -> {
             if (this.isRunning) {
+                try {engine.CreateCSVFile();}
+                catch (IOException e){
+                    System.out.println(e);
+                }
                 this.toggleButton.setText("START");
                 this.optionBox.getChildren().add(this.showGenotypesCheckBox);
             } else {

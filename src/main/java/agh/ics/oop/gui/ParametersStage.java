@@ -108,12 +108,22 @@ public class ParametersStage extends Application {
         this.contentBox.getChildren().add(this.submitButton);
         this.submitButton.setOnAction((e) -> {
             App newApp = new App();
-            newApp.setParameters(this.getParametrs());
-            Platform.runLater(new Runnable() {
-                public void run() {
-                    newApp.start(new Stage());
-                }
-            });
+            if(CanGetParams()) {
+                newApp.setParameters(this.getParametrs());
+                Platform.runLater(new Runnable() {
+                    public void run() {
+                        newApp.start(new Stage());
+                    }
+                });
+            }
+            else{
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Error");
+                alert.setHeaderText("Wrong User Input");
+                alert.setContentText("All inputs must be positive intagers. Please check again");
+
+                alert.showAndWait();
+            }
         });
     }
 
@@ -125,19 +135,32 @@ public class ParametersStage extends Application {
     }
 
     public Parametrs getParametrs() {
-        return new Parametrs(Integer.parseInt(this.mapWidth.getText()),
-                            Integer.parseInt(this.mapHeight.getText()),
-                            Integer.parseInt(this.startingNumberOfPlants.getText()),
-                            Integer.parseInt(this.energyGivenByPlants.getText()),
-                            Integer.parseInt(this.numberOfGrowingPlants.getText()),
-                            Integer.parseInt(this.startingNumberOfAnimals.getText()),
-                            Integer.parseInt(this.startingEnergy.getText()),
-                            Integer.parseInt(this.energyRequierdToBeFedUp.getText()),
-                            Integer.parseInt(this.energyUsedToBreed.getText()),
-                            Integer.parseInt(this.minNumberOfMutations.getText()),
-                            Integer.parseInt(this.maxNumberOfMutations.getText()),
-                            Integer.parseInt(this.genotypeLength.getText()),
-                            this.saveToFile.isSelected()
-                );
+            return new Parametrs(Integer.parseInt(this.mapWidth.getText()),
+                    Integer.parseInt(this.mapHeight.getText()),
+                    Integer.parseInt(this.startingNumberOfPlants.getText()),
+                    Integer.parseInt(this.energyGivenByPlants.getText()),
+                    Integer.parseInt(this.numberOfGrowingPlants.getText()),
+                    Integer.parseInt(this.startingNumberOfAnimals.getText()),
+                    Integer.parseInt(this.startingEnergy.getText()),
+                    Integer.parseInt(this.energyRequierdToBeFedUp.getText()),
+                    Integer.parseInt(this.energyUsedToBreed.getText()),
+                    Integer.parseInt(this.minNumberOfMutations.getText()),
+                    Integer.parseInt(this.maxNumberOfMutations.getText()),
+                    Integer.parseInt(this.genotypeLength.getText()),
+                    this.saveToFile.isSelected()
+            );
+    }
+
+    public boolean ValidateText(){
+        return (this.mapWidth.getText().matches("\\d+") && this.mapHeight.getText().matches("\\d+") &&
+                this.startingNumberOfPlants.getText().matches("\\d+") && this.energyGivenByPlants.getText().matches("\\d+") &&
+                this.numberOfGrowingPlants.getText().matches("\\d+") && this.startingNumberOfAnimals.getText().matches("\\d+") &&
+                this.startingEnergy.getText().matches("\\d+") && this.energyRequierdToBeFedUp.getText().matches("\\d+") &&
+                this.energyUsedToBreed.getText().matches("\\d+") && this.minNumberOfMutations.getText().matches("\\d+") &&
+                this.maxNumberOfMutations.getText().matches("\\d+") && this.genotypeLength.getText().matches("\\d+"));
+    }
+
+    public boolean CanGetParams(){
+        return ValidateText();
     }
 }
